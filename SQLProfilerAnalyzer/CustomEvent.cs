@@ -8,6 +8,8 @@ namespace SQLProfilerAnalyzer
 {
     public class CustomEvent
     {
+        public string EventName { get; set; }
+
         public string ObjectName { get; set; }
 
         public string TextData { get; set; }

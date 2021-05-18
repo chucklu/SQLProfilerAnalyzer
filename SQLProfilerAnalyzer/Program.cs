@@ -49,19 +49,21 @@ namespace SQLProfilerAnalyzer
 
         static void WriteWrong(string sourceFolder, string outputFolder)
         {
-            TraceXmlParser parser = new TraceXmlParser();
-            var wrongTraceFile = "wrong trace0518-001.xml";
+            var wrongTraceFile = "wrong trace0518-002.xml";
             var wrongTracePath = Path.Combine(sourceFolder, wrongTraceFile);
-            var dic2 = parser.Read(wrongTracePath);
+
+            TraceXmlParser parser = new TraceXmlParser(wrongTracePath);
+            var dic2 = parser.Read();
             Write(Path.Combine(outputFolder, "WrongTrace.txt"), dic2);
         }
 
         static void WriteCorrect(string sourceFolder, string outputFolder)
         {
-            TraceXmlParser parser = new TraceXmlParser();
             var correctTraceFile = "correct trace.xml";
             var correctTracePath = Path.Combine(sourceFolder, correctTraceFile);
-            var dic1 = parser.Read(correctTracePath);
+
+            TraceXmlParser parser = new TraceXmlParser(correctTracePath);
+            var dic1 = parser.Read();
             Write(Path.Combine(outputFolder, "CorrectTrace.txt"), dic1);
         }
 
@@ -69,7 +71,7 @@ namespace SQLProfilerAnalyzer
         {
             foreach (var item in dic)
             {
-                FileHelper.Write(path,$"{item.Key:D5} {item.Value.TextData}");
+                FileHelper.Write(path,$"{item.Key:D5}  {item.Value.TextData}");
             }
         }
     }

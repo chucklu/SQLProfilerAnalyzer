@@ -11,26 +11,41 @@ namespace SQLProfilerAnalyzer
 {
     public class TraceXmlParser
     {
-        public Dictionary<int, CustomEvent> Read(string path)
+        public XElement RootElement { get; set; }
+
+        public Dictionary<int, CustomEvent> EventData = new Dictionary<int, CustomEvent>();
+
+        public TraceXmlParser(string path)
         {
             RemoveXmlNamespaces(path);
-            Dictionary<int, CustomEvent> dic = new Dictionary<int, CustomEvent>();
-            var element = XElement.Load(path);//root element TraceData
-            var eventsElement = element.Element("Events");
+            RootElement = XElement.Load(path);//root element TraceData
+        }
+
+        public Dictionary<int, CustomEvent> Read()
+        {
+            var eventsElement = RootElement.Element("Events");
             if (eventsElement == null)
             {
                 throw new Exception("Can not find Events element.");
             }
             var eventData = eventsElement.Elements("Event");
-            var rpcStartingData = eventData.Where(x => x.Attribute("name")?.Value == "RPC:Starting");
+
+            var eventList = new List<string>()
+            {
+                "RPC:Starting",
+                "SQL:BatchStarting"
+            };
+
+            var tempEventData = eventData.Where(x => eventList.Contains(x.Attribute("name")?.Value));
             int i = 0;
             var skipList = new List<string>
             {
                 "sp_reset_connection"
             };
-            foreach (var item in rpcStartingData)
+            foreach (var item in tempEventData)
             {
                 CustomEvent customEvent = new CustomEvent();
+                customEvent.EventName = item.Attribute("name")?.Value;
                 var objectName = GetColumnValue(item, nameof(customEvent.ObjectName));
                 var textData = GetColumnValue(item, nameof(customEvent.TextData));
                 customEvent.ObjectName = objectName;
@@ -38,11 +53,11 @@ namespace SQLProfilerAnalyzer
                 if (!skipList.Contains(objectName))
                 {
                     i++;
-                    dic.Add(i, customEvent);
+                    EventData.Add(i, customEvent);
                 }
             }
 
-            return dic;
+            return EventData;
         }
 
 
@@ -59,8 +74,8 @@ namespace SQLProfilerAnalyzer
         public string GetColumnValue(XElement element,string name)
         {
             var columns = element.Elements("Column");
-            var objectNameElement = columns.First(x => x.Attribute("name")?.Value == name);
-            return objectNameElement.Value;
+            var objectNameElement = columns.FirstOrDefault(x => x.Attribute("name")?.Value == name);
+            return objectNameElement?.Value;
         }
     }
 }
