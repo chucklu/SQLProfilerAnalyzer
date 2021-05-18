@@ -29,6 +29,7 @@ namespace SQLProfilerAnalyzer
             finally
             {
                 LogHelper.CreateLog(LogEventLevel.Information,"End of the program.");
+                Console.WriteLine("End of the program.");
                 Console.ReadLine();
             }
         }
@@ -52,11 +53,11 @@ namespace SQLProfilerAnalyzer
             Write(Path.Combine(baseFolder, "CorrectTrace.txt"), dic1);
         }
 
-        static void Write(string path, Dictionary<int, string> dic)
+        static void Write(string path, Dictionary<int, CustomEvent> dic)
         {
             foreach (var item in dic)
             {
-                FileHelper.Write(path,$"{item.Key:D5} {item.Value}");
+                FileHelper.Write(path,$"{item.Key:D5} {item.Value.TextData}");
             }
         }
     }

@@ -11,10 +11,10 @@ namespace SQLProfilerAnalyzer
 {
     public class TraceXmlParser
     {
-        public Dictionary<int,string> Read(string path)
+        public Dictionary<int, CustomEvent> Read(string path)
         {
             RemoveXmlNamespaces(path);
-            Dictionary<int, string> dic = new Dictionary<int, string>();
+            Dictionary<int, CustomEvent> dic = new Dictionary<int, CustomEvent>();
             var element = XElement.Load(path);//root element TraceData
             var eventsElement = element.Element("Events");
             if (eventsElement == null)
@@ -27,8 +27,12 @@ namespace SQLProfilerAnalyzer
             foreach (var item in rpcStartingData)
             {
                 i++;
-                var objectName = GetObjectName(item);
-                dic.Add(i, objectName);
+                CustomEvent customEvent = new CustomEvent();
+                var objectName = GetColumnValue(item, nameof(customEvent.ObjectName));
+                var textData = GetColumnValue(item, nameof(customEvent.TextData));
+                customEvent.ObjectName = objectName;
+                customEvent.TextData = textData;
+                dic.Add(i, customEvent);
             }
 
             return dic;
@@ -45,10 +49,10 @@ namespace SQLProfilerAnalyzer
             xmlDocument.Save(path);
         }
 
-        public string GetObjectName(XElement element)
+        public string GetColumnValue(XElement element,string name)
         {
             var columns = element.Elements("Column");
-            var objectNameElement = columns.First(x => x.Attribute("name")?.Value == "ObjectName");
+            var objectNameElement = columns.First(x => x.Attribute("name")?.Value == name);
             return objectNameElement.Value;
         }
     }
