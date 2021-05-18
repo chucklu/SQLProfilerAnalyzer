@@ -162,6 +162,7 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SerilogJsonConfiguration.cs" />
+    <Compile Include="TraceXmlParser.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

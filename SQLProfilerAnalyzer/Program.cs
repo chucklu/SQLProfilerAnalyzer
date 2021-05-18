@@ -1,5 +1,7 @@
 ﻿using System;
+using System.CodeDom;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,6 +17,7 @@ namespace SQLProfilerAnalyzer
             try
             {
                 LogHelper.CreateLog(LogEventLevel.Information, "Start of the program.");
+                LogHelper.StartProgram();
                 Run();
             }
             catch (Exception ex)
@@ -31,7 +34,14 @@ namespace SQLProfilerAnalyzer
 
         static void Run()
         {
-
+            string folder = @"C:\workspace\";
+            var correctTraceFile = "correct trace.xml";
+            var wrongTraceFile = "wrong trace.xml";
+            var correctTracePath = Path.Combine(folder, correctTraceFile);
+            var wrongTracePath = Path.Combine(folder, wrongTraceFile);
+            TraceXmlParser parser = new TraceXmlParser();
+            var dic2 = parser.Read(wrongTracePath);
+            var dic1 = parser.Read(correctTracePath);
         }
     }
 }
