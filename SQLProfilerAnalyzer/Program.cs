@@ -37,20 +37,32 @@ namespace SQLProfilerAnalyzer
         static void Run()
         {
             string folder = @"C:\workspace\";
-            var correctTraceFile = "correct trace.xml";
-            var wrongTraceFile = "wrong trace.xml";
-            var correctTracePath = Path.Combine(folder, correctTraceFile);
-            var wrongTracePath = Path.Combine(folder, wrongTraceFile);
-            TraceXmlParser parser = new TraceXmlParser();
 
             var baseFolder= Path.GetDirectoryName(
                 System.Reflection.Assembly.GetExecutingAssembly().GetName().CodeBase);
-            baseFolder = baseFolder.Replace(@"file:\", string.Empty);
-            var dic2 = parser.Read(wrongTracePath);
-            Write(Path.Combine(baseFolder, "WrongTrace.txt"), dic2);
+           var outputFolder = baseFolder.Replace(@"file:\", string.Empty);
 
+           //WriteCorrect(sourceFolder, outputFolder);
+
+           WriteWrong(sourceFolder, outputFolder);
+        }
+
+        static void WriteWrong(string sourceFolder, string outputFolder)
+        {
+            TraceXmlParser parser = new TraceXmlParser();
+            var wrongTraceFile = "wrong trace0518-001.xml";
+            var wrongTracePath = Path.Combine(sourceFolder, wrongTraceFile);
+            var dic2 = parser.Read(wrongTracePath);
+            Write(Path.Combine(outputFolder, "WrongTrace.txt"), dic2);
+        }
+
+        static void WriteCorrect(string sourceFolder, string outputFolder)
+        {
+            TraceXmlParser parser = new TraceXmlParser();
+            var correctTraceFile = "correct trace.xml";
+            var correctTracePath = Path.Combine(sourceFolder, correctTraceFile);
             var dic1 = parser.Read(correctTracePath);
-            Write(Path.Combine(baseFolder, "CorrectTrace.txt"), dic1);
+            Write(Path.Combine(outputFolder, "CorrectTrace.txt"), dic1);
         }
 
         static void Write(string path, Dictionary<int, CustomEvent> dic)
