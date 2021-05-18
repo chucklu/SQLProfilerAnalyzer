@@ -3,6 +3,7 @@ using System.CodeDom;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net.Mime;
 using System.Text;
 using System.Threading.Tasks;
 using DependentChecker.Helper;
@@ -40,8 +41,23 @@ namespace SQLProfilerAnalyzer
             var correctTracePath = Path.Combine(folder, correctTraceFile);
             var wrongTracePath = Path.Combine(folder, wrongTraceFile);
             TraceXmlParser parser = new TraceXmlParser();
+
+            var baseFolder= Path.GetDirectoryName(
+                System.Reflection.Assembly.GetExecutingAssembly().GetName().CodeBase);
+            baseFolder = baseFolder.Replace(@"file:\", string.Empty);
             var dic2 = parser.Read(wrongTracePath);
+            Write(Path.Combine(baseFolder, "WrongTrace.txt"), dic2);
+
             var dic1 = parser.Read(correctTracePath);
+            Write(Path.Combine(baseFolder, "CorrectTrace.txt"), dic1);
+        }
+
+        static void Write(string path, Dictionary<int, string> dic)
+        {
+            foreach (var item in dic)
+            {
+                FileHelper.Write(path,$"{item.Key:D5} {item.Value}");
+            }
         }
     }
 }
