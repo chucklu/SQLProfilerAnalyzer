@@ -24,15 +24,22 @@ namespace SQLProfilerAnalyzer
             var eventData = eventsElement.Elements("Event");
             var rpcStartingData = eventData.Where(x => x.Attribute("name")?.Value == "RPC:Starting");
             int i = 0;
+            var skipList = new List<string>
+            {
+                "sp_reset_connection"
+            };
             foreach (var item in rpcStartingData)
             {
-                i++;
                 CustomEvent customEvent = new CustomEvent();
                 var objectName = GetColumnValue(item, nameof(customEvent.ObjectName));
                 var textData = GetColumnValue(item, nameof(customEvent.TextData));
                 customEvent.ObjectName = objectName;
                 customEvent.TextData = textData;
-                dic.Add(i, customEvent);
+                if (!skipList.Contains(objectName))
+                {
+                    i++;
+                    dic.Add(i, customEvent);
+                }
             }
 
             return dic;
