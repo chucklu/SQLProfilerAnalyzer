@@ -36,7 +36,7 @@ namespace SQLProfilerAnalyzer
 
         static void Run()
         {
-            string folder = @"C:\workspace\";
+            string sourceFolder = @"C:\workspace\";
 
             var baseFolder= Path.GetDirectoryName(
                 System.Reflection.Assembly.GetExecutingAssembly().GetName().CodeBase);
